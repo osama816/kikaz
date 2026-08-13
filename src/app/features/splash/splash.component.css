@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+
+.splash-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--kikaz-red);
+  overflow: hidden;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(192,30,33,0.6) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,69,71,0.4) 0%, transparent 40%);
+}
+
+.logo-wrap .letter {
+  text-shadow: 5px 5px 0px #8B0000;
+  filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
+}
