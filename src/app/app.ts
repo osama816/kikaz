@@ -18,7 +18,7 @@ import { MenuComponent } from './features/menu/menu.component';
     .hidden-until-ready { visibility: hidden; }
   `],
 })
-export class AppComponent {
+export class App {
   showSplash = signal(true);
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
