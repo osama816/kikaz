@@ -1,244 +1,155 @@
 @import "tailwindcss";
 
-/* ── KIKAZ Brand CSS Variables ────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   KIKAZ Digital Menu — Global Design System
+   Matches physical menu: WHITE paper + RED ink only
+   ══════════════════════════════════════════════════════ */
+
 :root {
-  --kikaz-red:      #E8272A;
-  --kikaz-red-dark: #C01E21;
-  --kikaz-red-light:#FF4547;
-  --kikaz-white:    #FFFDF8;
-  --kikaz-cream:    #FFF5E4;
-  --kikaz-gold:     #F5C518;
-  --kikaz-dark:     #1A0000;
-  --kikaz-gray:     #6B6B6B;
+  --red:    #E33024;   /* warmer, ink-like red */
+  --red-dk: #C52219;
+  --paper:  #FAF6ED;   /* warmer off-white paper */
+  --ink:    #1F1616;   /* warm black ink */
+  --gray:   #8C7474;   /* muted warm gray for descriptions */
+  --gold:   #F5C518;   /* OH SO GOOD badge */
 
-  --font-display:  'Bangers', cursive;
-  --font-heading:  'Fredoka One', cursive;
-  --font-body:     'Nunito', sans-serif;
+  --f-logo:  'Lilita One', cursive;      /* KIKAZ bubble logo */
+  --f-item:  'Fredoka One', cursive;     /* item names, section headers */
+  --f-body:  'Nunito', sans-serif;       /* descriptions, small text */
 }
 
-/* ── Base Reset ───────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; }
-
-html {
-  scroll-behavior: smooth;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  font-family: var(--font-body);
-  background-color: var(--kikaz-white);
-  color: var(--kikaz-dark);
+/* ── Reset ────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html  { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+body  {
+  font-family: var(--f-body);
+  background: var(--paper);
+  color: var(--ink);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
+img   { display: block; max-width: 100%; }
+a     { text-decoration: none; }
+button { cursor: pointer; border: none; background: none; }
 
-/* ── Halftone Pattern Utility ─────────────────────────────────── */
-.halftone-bg {
-  background-image: radial-gradient(circle, var(--kikaz-red) 1.5px, transparent 1.5px);
-  background-size: 14px 14px;
-  opacity: 0.08;
+/* ── Checkerboard strip (matches physical menu border exactly) ── */
+.ck {
+  background: repeating-conic-gradient(
+    var(--red) 0% 25%, var(--paper) 0% 50%
+  ) 0 0 / 20px 20px;
+  flex-shrink: 0;
 }
+.ck-h  { height: 20px; width: 100%; }   /* horizontal strip */
+.ck-v  { width:  20px; height: 100%; }  /* vertical strip (sides) */
+.ck-sm { height: 14px; width: 100%; background: repeating-conic-gradient(var(--red) 0% 25%, var(--paper) 0% 50%) 0 0 / 14px 14px; }
 
-.halftone-bg-strong {
-  background-image: radial-gradient(circle, var(--kikaz-red) 2px, transparent 2px);
-  background-size: 12px 12px;
-  opacity: 0.12;
-}
-
-/* ── Checkerboard Border Pattern ──────────────────────────────── */
-.checker-border {
-  border: 6px solid var(--kikaz-red);
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      var(--kikaz-red) 0px,
-      var(--kikaz-red) 12px,
-      transparent 12px,
-      transparent 24px
-    );
-  background-size: 100% 100%;
+/* ── Halftone dot pattern (red dots on paper) ────────────────── */
+.halftone {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--red) 1.6px, transparent 1.6px);
+  background-size: 10px 10px;
+  opacity: 0.07;
+  pointer-events: none;
 }
 
-/* ── Comic Outline Text ───────────────────────────────────────── */
-.text-outline-white {
-  -webkit-text-stroke: 3px white;
-  paint-order: stroke fill;
-}
-.text-outline-red {
-  -webkit-text-stroke: 3px var(--kikaz-red);
-  paint-order: stroke fill;
-}
-.text-outline-dark {
-  -webkit-text-stroke: 2px var(--kikaz-dark);
-  paint-order: stroke fill;
-}
-
-/* ── Comic Shadow ─────────────────────────────────────────────── */
-.comic-shadow {
-  box-shadow: 4px 4px 0px var(--kikaz-dark);
-}
-.comic-shadow-red {
-  box-shadow: 4px 4px 0px var(--kikaz-red-dark);
-}
-.comic-shadow-lg {
-  box-shadow: 6px 6px 0px var(--kikaz-dark);
-}
-.comic-shadow-hover {
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
-}
-.comic-shadow-hover:hover {
-  box-shadow: 8px 8px 0px var(--kikaz-dark);
-  transform: translate(-2px, -2px);
-}
-
-/* ── Comic Border ─────────────────────────────────────────────── */
-.comic-border {
-  border: 3px solid var(--kikaz-dark);
-  border-radius: 12px;
-}
-.comic-border-red {
-  border: 3px solid var(--kikaz-red);
-  border-radius: 12px;
-}
-
-/* ── Starburst Badge ──────────────────────────────────────────── */
-.starburst {
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-}
-
-/* ── Marquee ──────────────────────────────────────────────────── */
-@keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.marquee-track {
-  animation: marquee 18s linear infinite;
-  white-space: nowrap;
+/* ── Section pill (matches physical menu section headers) ──────── */
+.sec-pill {
   display: inline-flex;
-  will-change: transform;
+  align-items: center;
+  background: var(--red);
+  color: var(--paper);
+  font-family: var(--f-logo);
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  padding: 8px 28px;
+  border-radius: 100px;
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+.sec-pill::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.22) 1.5px, transparent 1.5px);
+  background-size: 9px 9px;
 }
 
-/* ── Floating animations ──────────────────────────────────────── */
-@keyframes float-y {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50%       { transform: translateY(-12px) rotate(3deg); }
-}
-@keyframes float-y-slow {
-  0%, 100% { transform: translateY(0px) rotate(-2deg); }
-  50%       { transform: translateY(-8px) rotate(2deg); }
-}
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes bounce-in {
-  0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
-  60%  { transform: scale(1.2) rotate(5deg); opacity: 1; }
+/* ── ANIMATIONS ─────────────────────────────────────────────────── */
+
+/* KIKAZ letter pop-in */
+@keyframes letter-pop {
+  0%   { transform: scale(0) rotate(-12deg); opacity: 0; }
+  60%  { transform: scale(1.12) rotate(2deg); opacity: 1; }
   100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
-@keyframes wiggle {
-  0%, 100% { transform: rotate(-3deg); }
-  50%       { transform: rotate(3deg); }
-}
-@keyframes pop-in {
-  0%   { transform: scale(0.5); opacity: 0; }
-  80%  { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-@keyframes slide-up {
-  0%   { transform: translateY(40px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-@keyframes pulse-red {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(232,39,42,0.4); }
-  50%       { box-shadow: 0 0 0 8px rgba(232,39,42,0); }
+
+/* Fade up (subtitle, tagline) */
+@keyframes fade-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
 
-.animate-float        { animation: float-y 3s ease-in-out infinite; }
-.animate-float-slow   { animation: float-y-slow 4.5s ease-in-out infinite; }
-.animate-spin-slow    { animation: spin-slow 8s linear infinite; }
-.animate-bounce-in    { animation: bounce-in 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
-.animate-wiggle       { animation: wiggle 1.5s ease-in-out infinite; }
-.animate-pop-in       { animation: pop-in 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
-.animate-slide-up     { animation: slide-up 0.5s ease forwards; }
-.animate-pulse-red    { animation: pulse-red 2s ease infinite; }
+/* Badge spin-in */
+@keyframes badge-in {
+  0%   { transform: scale(0) rotate(-200deg); opacity: 0; }
+  70%  { transform: scale(1.1) rotate(5deg);  opacity: 1; }
+  100% { transform: scale(1) rotate(12deg);   opacity: 1; }
+}
 
-/* ── Scroll-reveal (JS adds .visible) ─────────────────────────── */
+/* Section header stamp-in */
+@keyframes stamp {
+  0%   { transform: scale(0.7) rotate(-2deg); opacity: 0; filter: blur(3px); }
+  65%  { transform: scale(1.04) rotate(0.5deg); opacity: 1; filter: blur(0); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Item stagger from left */
+@keyframes slide-in-left {
+  from { transform: translateX(-24px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+/* Float (decorative shapes) */
+@keyframes float-a {
+  0%, 100% { transform: translateY(0)     rotate(0deg);   }
+  50%       { transform: translateY(-10px) rotate(5deg);   }
+}
+@keyframes float-b {
+  0%, 100% { transform: translateY(0)    rotate(0deg);   }
+  50%       { transform: translateY(-8px) rotate(-4deg);  }
+}
+
+/* Pulse ring for FAB */
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0   rgba(232,39,42,0.55); }
+  70%  { box-shadow: 0 0 0 14px rgba(232,39,42,0);   }
+  100% { box-shadow: 0 0 0 0   rgba(232,39,42,0);   }
+}
+
+/* Modal sheet */
+@keyframes sheet-up   { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes sheet-down { from { transform: translateY(0);    } to { transform: translateY(110%); } }
+@keyframes bg-in      { from { opacity: 0; } to { opacity: 1; } }
+
+/* Scroll reveal */
 .reveal {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
 
-/* ── Shimmer Loading ──────────────────────────────────────────── */
-.shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
+/* ── Scrollbar ──────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: var(--red); border-radius: 3px; }
+.no-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scroll::-webkit-scrollbar { display: none; }
 
-/* ── Custom scrollbar ─────────────────────────────────────────── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--kikaz-cream); }
-::-webkit-scrollbar-thumb { background: var(--kikaz-red); border-radius: 4px; }
-
-/* ── Wave divider SVG ─────────────────────────────────────────── */
-.wave-divider svg { display: block; }
-
-/* ── Category sticky tab active indicator ──────────────────────── */
-.cat-tab-indicator {
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ── Bottom Sheet Modal ───────────────────────────────────────── */
-.bottom-sheet-overlay {
-  animation: fade-in 0.2s ease forwards;
-}
-.bottom-sheet-panel {
-  animation: slide-up-modal 0.35s cubic-bezier(0.175,0.885,0.32,1.1) forwards;
-}
-.bottom-sheet-panel-exit {
-  animation: slide-down-modal 0.25s ease forwards;
-}
-@keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes slide-up-modal {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
-}
-@keyframes slide-down-modal {
-  from { transform: translateY(0); }
-  to   { transform: translateY(100%); }
-}
-
-/* ── Halftone overlay for hero ────────────────────────────────── */
-.hero-halftone {
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
-  background-size: 10px 10px;
-}
-
-/* ── Comic burst (price badge bg) ────────────────────────────── */
-.burst-8 {
-  clip-path: polygon(50% 0%, 59% 20%, 79% 9%, 73% 30%, 98% 35%, 79% 48%, 98% 65%, 73% 65%, 79% 91%, 59% 78%, 50% 100%, 41% 78%, 21% 91%, 27% 65%, 2% 65%, 21% 48%, 2% 35%, 27% 30%, 21% 9%, 41% 20%);
-}
-
-/* ── Tag Pills ────────────────────────────────────────────────── */
-.tag-beef    { background: #8B1A1A; color: white; }
-.tag-chicken { background: #F59E0B; color: white; }
-.tag-veg     { background: #16A34A; color: white; }
-.tag-fish    { background: #0EA5E9; color: white; }
+/* ── Tag pills ──────────────────────────────────────────────────── */
+.tag { font-family: var(--f-body); font-weight: 800; font-size: 9px; padding: 2px 8px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.08em; }
+.tag-beef    { background: #8B1A1A; color: #fff; }
+.tag-chicken { background: #A05C00; color: #fff; }
+.tag-veg     { background: #1B6830; color: #fff; }
+.tag-fish    { background: #005888; color: #fff; }

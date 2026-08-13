@@ -2,79 +2,70 @@ import {
   Component,
   OnInit,
   AfterViewInit,
+  OnDestroy,
   Inject,
   PLATFORM_ID,
   signal,
   computed,
-  ViewChildren,
-  QueryList,
-  ElementRef,
+  ViewChild,
+  ElementRef
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { CommonModule, isPlatformBrowser, UpperCasePipe } from '@angular/common';
 import { MenuItem, MenuCategory, MenuTag } from '../../core/models/menu.model';
 import { MENU_ITEMS, MENU_CATEGORIES } from '../../core/data/menu.data';
 
-type SortMode = 'default' | 'asc' | 'desc';
-type FilterTag = MenuTag | 'all';
+type SortMode  = 'default' | 'asc' | 'desc';
+type FilterKey = MenuTag | 'all';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, UpperCasePipe],
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css'],
 })
-export class MenuComponent implements OnInit, AfterViewInit {
-  @ViewChildren('sectionRef') sectionRefs!: QueryList<ElementRef<HTMLElement>>;
+export class MenuComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @ViewChild('heroVideo') heroVideo?: ElementRef<HTMLVideoElement>;
 
   readonly categories = MENU_CATEGORIES;
 
-  // Reactive state
+  // ── Reactive state ─────────────────────────────────────────────
   activeCategory = signal<MenuCategory>('breakfast');
-  activeFilter   = signal<FilterTag>('all');
+  activeFilter   = signal<FilterKey>('all');
   sortMode       = signal<SortMode>('default');
   selectedItem   = signal<MenuItem | null>(null);
   showModal      = signal(false);
   isClosingModal = signal(false);
-  searchQuery    = signal('');
 
-  readonly filterOptions: { key: FilterTag; label: string; emoji: string }[] = [
-    { key: 'all',     label: 'All',     emoji: '🌟' },
-    { key: 'beef',    label: 'Beef',    emoji: '🥩' },
-    { key: 'chicken', label: 'Chicken', emoji: '🍗' },
-    { key: 'veg',     label: 'Veg',     emoji: '🥬' },
-    { key: 'fish',    label: 'Fish',    emoji: '🐟' },
+  // Video State
+  videoFinished    = signal(false);
+  isVideoFadingOut = signal(false);
+
+  onVideoEnded(): void {
+    this.isVideoFadingOut.set(true);
+    setTimeout(() => {
+      this.videoFinished.set(true);
+    }, 500);
+  }
+
+  readonly filterOptions: { key: FilterKey; label: string }[] = [
+    { key: 'all',     label: 'ALL'     },
+    { key: 'beef',    label: 'BEEF'    },
+    { key: 'chicken', label: 'CHICKEN' },
+    { key: 'veg',     label: 'VEG'     },
+    { key: 'fish',    label: 'FISH'    },
   ];
 
-  readonly displayedItems = computed(() => {
-    let items = MENU_ITEMS.filter(i => i.category === this.activeCategory());
-
-    const filter = this.activeFilter();
-    if (filter !== 'all') {
-      items = items.filter(i => i.tags?.includes(filter));
-    }
-
-    const q = this.searchQuery().trim().toLowerCase();
-    if (q) {
-      items = items.filter(
-        i => i.name.toLowerCase().includes(q) || i.description.toLowerCase().includes(q)
-      );
-    }
-
-    const mode = this.sortMode();
-    if (mode === 'asc')  items = [...items].sort((a, b) => a.price - b.price);
-    if (mode === 'desc') items = [...items].sort((a, b) => b.price - a.price);
-
-    return items;
-  });
-
-  readonly categoryCount = computed(() => {
-    return this.categories.map(c => ({
+  readonly categoriesWithItems = computed<{ id: MenuCategory; label: string; icon: string; description: string; count: number; items: MenuItem[]; }[]>(() =>
+    this.categories.map(c => ({
       ...c,
       count: MENU_ITEMS.filter(i => i.category === c.id).length,
-    }));
-  });
+      items: MENU_ITEMS.filter(i => i.category === c.id),
+    }))
+  );
+
+  private revealObserver?: IntersectionObserver;
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {}
 
@@ -82,61 +73,68 @@ export class MenuComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.setupScrollObserver();
+      this.initReveal();
+      // Force play video just in case browser autoplay blocks it
+      if (this.heroVideo?.nativeElement) {
+        this.heroVideo.nativeElement.muted = true;
+        this.heroVideo.nativeElement.play().catch(e => console.error('Video autoplay failed:', e));
+      }
     }
   }
 
-  private setupScrollObserver(): void {
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      },
-      { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
-    );
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  ngOnDestroy(): void {
+    this.revealObserver?.disconnect();
   }
 
+  // ── Scroll reveal ──────────────────────────────────────────────
+  private initReveal(): void {
+    this.revealObserver?.disconnect();
+    this.revealObserver = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.06, rootMargin: '0px 0px -10px 0px' }
+    );
+    setTimeout(() => {
+      document.querySelectorAll('.reveal').forEach(el => this.revealObserver!.observe(el));
+    }, 60);
+  }
+
+  // ── Category ───────────────────────────────────────────────────
   setCategory(cat: MenuCategory): void {
     this.activeCategory.set(cat);
     this.activeFilter.set('all');
-    this.searchQuery.set('');
-    // Scroll to top of items section
     if (isPlatformBrowser(this.platformId)) {
       setTimeout(() => {
-        document.getElementById('menu-items')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        this.setupScrollObserver();
-      }, 100);
+        document.getElementById('menu-main')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        this.initReveal();
+      }, 50);
     }
   }
 
-  setFilter(f: FilterTag): void {
-    this.activeFilter.set(f);
+  scrollToCategory(catId: string): void {
+    this.activeCategory.set(catId as MenuCategory);
+    if (isPlatformBrowser(this.platformId)) {
+      document.getElementById('section-' + catId)?.scrollIntoView({ behavior: 'smooth' });
+    }
   }
+
+  // ── Filter & sort ──────────────────────────────────────────────
+  setFilter(f: FilterKey): void { this.activeFilter.set(f); }
 
   toggleSort(): void {
     const cycle: SortMode[] = ['default', 'asc', 'desc'];
-    const idx = cycle.indexOf(this.sortMode());
-    this.sortMode.set(cycle[(idx + 1) % cycle.length]);
+    this.sortMode.set(cycle[(cycle.indexOf(this.sortMode()) + 1) % cycle.length]);
   }
 
   getSortLabel(): string {
-    const m = this.sortMode();
-    if (m === 'asc')  return '↑ Price';
-    if (m === 'desc') return '↓ Price';
-    return '⇅ Sort';
+    return { default: '⇅ SORT', asc: '↑ PRICE', desc: '↓ PRICE' }[this.sortMode()];
   }
 
+  // ── Modal ──────────────────────────────────────────────────────
   openItem(item: MenuItem): void {
     this.selectedItem.set(item);
-    this.showModal.set(true);
     this.isClosingModal.set(false);
-    if (isPlatformBrowser(this.platformId)) {
-      document.body.style.overflow = 'hidden';
-    }
+    this.showModal.set(true);
+    if (isPlatformBrowser(this.platformId)) document.body.style.overflow = 'hidden';
   }
 
   closeModal(): void {
@@ -145,36 +143,17 @@ export class MenuComponent implements OnInit, AfterViewInit {
       this.showModal.set(false);
       this.isClosingModal.set(false);
       this.selectedItem.set(null);
-      if (isPlatformBrowser(this.platformId)) {
-        document.body.style.overflow = '';
-      }
-    }, 280);
+      if (isPlatformBrowser(this.platformId)) document.body.style.overflow = '';
+    }, 290);
   }
 
+  // ── Actions ────────────────────────────────────────────────────
   callOrder(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      window.location.href = 'tel:01500899243';
-    }
+    if (isPlatformBrowser(this.platformId)) window.location.href = 'tel:01500899243';
   }
 
+  // ── Helpers ────────────────────────────────────────────────────
   getTagClass(tag: MenuTag): string {
-    const map: Record<MenuTag, string> = {
-      beef:    'tag-beef',
-      chicken: 'tag-chicken',
-      veg:     'tag-veg',
-      fish:    'tag-fish',
-    };
-    return map[tag] ?? '';
-  }
-
-  getTagEmoji(tag: MenuTag): string {
-    const map: Record<MenuTag, string> = {
-      beef: '🥩', chicken: '🍗', veg: '🥬', fish: '🐟',
-    };
-    return map[tag] ?? '';
-  }
-
-  trackById(_i: number, item: MenuItem): string {
-    return item.id;
+    return { beef: 'tag-beef', chicken: 'tag-chicken', veg: 'tag-veg', fish: 'tag-fish' }[tag] ?? '';
   }
 }

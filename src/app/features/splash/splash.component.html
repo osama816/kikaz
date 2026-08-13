@@ -1,53 +1,42 @@
-<section #splashEl class="splash-screen">
-  <!-- Halftone overlay -->
-  <div class="absolute inset-0 hero-halftone pointer-events-none"></div>
+<section #splashEl class="splash-wrap">
 
-  <!-- Floating decorative dots -->
-  <div class="deco-star absolute top-8 left-6 text-white text-3xl opacity-0">✦</div>
-  <div class="deco-star absolute top-12 right-8 text-[#F5C518] text-2xl opacity-0">✦</div>
-  <div class="deco-star absolute bottom-24 left-10 text-white text-xl opacity-0">✦</div>
-  <div class="deco-star absolute bottom-32 right-6 text-[#F5C518] text-4xl opacity-0">✦</div>
-  <div class="deco-star absolute top-1/3 left-4 text-white text-2xl opacity-0">◆</div>
-  <div class="deco-star absolute top-1/3 right-4 text-[#F5C518] text-2xl opacity-0">◆</div>
+  <!-- Checker borders top & bottom (brand identity) -->
+  <div class="splash-checker-top"></div>
+  <div class="splash-checker-bot"></div>
 
-  <!-- Badge OH SO GOOD -->
-  <div class="oh-so-good absolute top-10 right-6 opacity-0">
-    <div class="w-16 h-16 bg-[#F5C518] rounded-full flex flex-col items-center justify-center border-2 border-[#1A0000] comic-shadow rotate-12">
-      <span class="text-[#1A0000] font-bold text-[9px] leading-tight text-center uppercase tracking-tight"
-            style="font-family:'Nunito',sans-serif">OH<br>SO<br>GOOD</span>
+  <!-- Halftone texture (red dots on white) -->
+  <div class="splash-halftone"></div>
+
+  <!-- OH SO GOOD badge -->
+  <div class="splash-badge ohsogood-wrap">
+    <div class="ohsogood-badge">
+      <span>OH<br>SO<br>GOOD</span>
     </div>
   </div>
 
-  <!-- Main Logo -->
-  <div class="flex flex-col items-center justify-center h-full px-6 gap-4">
+  <!-- Floating sparkles (red) -->
+  <span class="splash-spark s1">✦</span>
+  <span class="splash-spark s2">◆</span>
+  <span class="splash-spark s3">✦</span>
+  <span class="splash-spark s4">◆</span>
 
-    <!-- KIKAZ letters -->
-    <div class="logo-wrap flex items-center gap-1">
-      <span class="letter" style="font-family:'Bangers',cursive; font-size: clamp(4rem,20vw,7rem); color:white; -webkit-text-stroke:4px #1A0000; line-height:1; display:inline-block;">K</span>
-      <span class="letter" style="font-family:'Bangers',cursive; font-size: clamp(4rem,20vw,7rem); color:white; -webkit-text-stroke:4px #1A0000; line-height:1; display:inline-block;">I</span>
-      <span class="letter" style="font-family:'Bangers',cursive; font-size: clamp(4rem,20vw,7rem); color:white; -webkit-text-stroke:4px #1A0000; line-height:1; display:inline-block;">K</span>
-      <span class="letter" style="font-family:'Bangers',cursive; font-size: clamp(4rem,20vw,7rem); color:white; -webkit-text-stroke:4px #1A0000; line-height:1; display:inline-block;">A</span>
-      <span class="letter" style="font-family:'Bangers',cursive; font-size: clamp(4rem,20vw,7rem); color:white; -webkit-text-stroke:4px #1A0000; line-height:1; display:inline-block;">Z</span>
-    </div>
-
-    <!-- Subtitle -->
-    <div class="subtitle opacity-0 flex flex-col items-center gap-1">
-      <div class="px-6 py-1.5 bg-white border-3 border-[#1A0000] comic-shadow rounded-full">
-        <span style="font-family:'Bangers',cursive; font-size:1.5rem; color:var(--kikaz-red); letter-spacing:0.12em;">
-          WRAPS &amp; SNACKS
-        </span>
-      </div>
-      <p style="font-family:'Nunito',sans-serif; color:rgba(255,255,255,0.85); font-size:0.85rem; font-weight:600; letter-spacing:0.1em;">
-        MADE لك
-      </p>
-    </div>
-
+  <!-- KIKAZ letters -->
+  <div class="splash-logo-wrap">
+    <span class="letter">K</span>
+    <span class="letter">I</span>
+    <span class="letter">K</span>
+    <span class="letter">A</span>
+    <span class="letter">Z</span>
   </div>
 
-  <!-- Bottom wave decoration -->
-  <div class="absolute bottom-0 left-0 right-0">
-    <svg viewBox="0 0 390 60" preserveAspectRatio="none" class="w-full h-12">
-      <path d="M0,30 C97,60 195,0 390,30 L390,60 L0,60 Z" fill="white" opacity="0.15"/>
-    </svg>
+  <!-- Subtitle -->
+  <div class="subtitle">
+    <div class="sub-pill">WRAPS &amp; SNACKS</div>
   </div>
+
+  <!-- Animated wrap illustration -->
+  <div class="splash-wrap-icon">
+    <img src="/hero_wrap_3d.png" alt="KIKAZ Wrap" class="splash-wrap-img">
+  </div>
+
 </section>

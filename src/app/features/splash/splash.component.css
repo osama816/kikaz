@@ -5,18 +5,139 @@
   z-index: 9999;
 }
 
-.splash-screen {
+/* ── Main splash wrapper ──────────────────────────────────────── */
+.splash-wrap {
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: var(--kikaz-red);
+  background: #FDFAF5;          /* warm white — matches brand */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
   overflow: hidden;
-  background-image:
-    radial-gradient(circle at 20% 80%, rgba(192,30,33,0.6) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255,69,71,0.4) 0%, transparent 40%);
 }
 
-.logo-wrap .letter {
-  text-shadow: 5px 5px 0px #8B0000;
-  filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
+/* ── Checker borders ──────────────────────────────────────────── */
+.splash-checker-top,
+.splash-checker-bot {
+  position: absolute;
+  left: 0; right: 0;
+  height: 22px;
+  background: repeating-conic-gradient(
+    #E8272A 0% 25%,
+    #FDFAF5 0% 50%
+  ) 0 0 / 22px 22px;
+}
+.splash-checker-top { top: 0; }
+.splash-checker-bot { bottom: 0; }
+
+/* ── Halftone texture ─────────────────────────────────────────── */
+.splash-halftone {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, #E8272A 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+/* ── OH SO GOOD badge ─────────────────────────────────────────── */
+.splash-badge {
+  position: absolute;
+  top: 36px;
+  right: 20px;
+}
+.ohsogood-wrap .ohsogood-badge {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #F5C518;
+  border: 3px solid #1C0202;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(12deg);
+  box-shadow: 3px 3px 0 #1C0202;
+  opacity: 0;
+}
+.ohsogood-wrap .ohsogood-badge span {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 9px;
+  color: #1C0202;
+  text-align: center;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* ── Sparkles ────────────────────────────────────────────────── */
+.splash-spark {
+  position: absolute;
+  color: #E8272A;
+  font-size: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+}
+.s1 { top: 18%; left: 10%; }
+.s2 { top: 22%; right: 14%; font-size: 1rem; }
+.s3 { bottom: 28%; left: 12%; font-size: 0.9rem; }
+.s4 { bottom: 24%; right: 10%; }
+
+/* ── KIKAZ logo letters ───────────────────────────────────────── */
+.splash-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  line-height: 1;
+}
+.letter {
+  font-family: 'Lilita One', cursive;
+  font-size: clamp(4.5rem, 22vw, 8rem);
+  color: #E8272A;
+  display: inline-block;
+  opacity: 0;
+  text-shadow:
+    0  4px 0 rgba(192,30,33,0.28),
+    4px 0  0 rgba(192,30,33,0.18);
+}
+
+/* ── Subtitle ─────────────────────────────────────────────────── */
+.subtitle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+}
+.sub-pill {
+  font-family: 'Lilita One', cursive;
+  font-size: 1.4rem;
+  color: #E8272A;
+  letter-spacing: 0.1em;
+  border: 3px solid #E8272A;
+  padding: 5px 22px;
+  border-radius: 100px;
+  background: #FDFAF5;
+}
+.sub-tagline {
+  font-family: 'Baloo 2', cursive;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #1C0202;
+  letter-spacing: 0.08em;
+}
+
+/* ── Wrap icon ────────────────────────────────────────────────── */
+.splash-wrap-icon {
+  width: clamp(180px, 55vw, 300px);
+  opacity: 0;
+  line-height: 1;
+}
+.splash-wrap-img {
+  width: 100%;
+  height: auto;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(4px 8px 16px rgba(227, 48, 36, 0.25));
 }

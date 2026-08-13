@@ -1,356 +1,201 @@
-<!-- ════════════════════════════════════════════
-     KIKAZ Digital Menu – Main Template
-     ════════════════════════════════════════════ -->
+<!--
+  KIKAZ Digital Menu — Physical Menu Replica
+  White paper + Red ink · No inline images in grid · Comic illustrations
+-->
 
-<!-- ── HERO HEADER ───────────────────────────────────────────── -->
-<header class="hero-header relative overflow-hidden" style="background-color: var(--kikaz-red);">
+<!-- ▌ PAGE FRAME — checkerboard border all around ▌ -->
+<div class="page-frame">
+  <div class="ck ck-v page-side-l"></div>
+  <div class="page-body">
 
-  <!-- Halftone overlay -->
-  <div class="absolute inset-0 hero-halftone pointer-events-none"></div>
+    <!-- ██ HERO MODERN ██ -->
+    <header class="hero-modern">
+      
+      @if (!videoFinished()) {
+        <video 
+          #heroVideo
+          class="hero-video" 
+          src="/video.mp4" 
+          autoplay 
+          [muted]="true" 
+          playsinline 
+          (ended)="onVideoEnded()"
+          [class.fade-out]="isVideoFadingOut()">
+        </video>
+      }
 
-  <!-- Decorative floating elements -->
-  <div class="absolute top-6 left-4 text-white text-2xl animate-float opacity-60">✦</div>
-  <div class="absolute top-10 right-16 text-[#F5C518] text-3xl animate-float-slow opacity-70">✦</div>
-  <div class="absolute bottom-16 left-8 text-white text-xl animate-float opacity-50" style="animation-delay:1s">◆</div>
-  <div class="absolute bottom-20 right-4 text-[#F5C518] text-2xl animate-float-slow opacity-60" style="animation-delay:0.5s">◆</div>
-
-  <!-- OH SO GOOD badge -->
-  <div class="absolute top-4 right-4 animate-wiggle z-10">
-    <div class="w-14 h-14 bg-[#F5C518] rounded-full flex flex-col items-center justify-center border-[3px] border-[#1A0000] comic-shadow rotate-12">
-      <span class="text-[#1A0000] font-black text-[8px] leading-tight text-center uppercase"
-            style="font-family:'Nunito',sans-serif">OH<br>SO<br>GOOD</span>
-    </div>
-  </div>
-
-  <!-- Main logo -->
-  <div class="relative z-10 pt-10 pb-6 px-4 flex flex-col items-center gap-3">
-
-    <div class="logo-letters flex items-center gap-0.5">
-      <span class="hero-letter">K</span>
-      <span class="hero-letter">I</span>
-      <span class="hero-letter">K</span>
-      <span class="hero-letter">A</span>
-      <span class="hero-letter">Z</span>
-    </div>
-
-    <!-- Subtitle pill -->
-    <div class="animate-slide-up" style="animation-delay:0.2s">
-      <div class="inline-flex items-center gap-2 px-5 py-2 bg-white rounded-full comic-shadow"
-           style="border: 3px solid #1A0000;">
-        <span style="font-family:'Bangers',cursive; font-size:1.35rem; color:var(--kikaz-red); letter-spacing:0.1em;">
-          WRAPS &amp; SNACKS
-        </span>
+      <div class="hero-bg-text-wrap" aria-hidden="true">
+        <div class="hero-bg-text">KIKAZ KIKAZ KIKAZ</div>
+        <div class="hero-bg-text outline">WRAPS & SNACKS WRAPS</div>
       </div>
-    </div>
-
-    <p class="animate-slide-up text-white font-bold text-sm opacity-90"
-       style="animation-delay:0.35s; font-family:'Fredoka One',cursive; letter-spacing:0.08em;">
-       مطعم الساحل الشمالي 🌊
-    </p>
-
-    <!-- Marquee ticker -->
-    <div class="w-full mt-2 overflow-hidden py-1.5 rounded-lg"
-         style="background:rgba(0,0,0,0.2); border: 2px dashed rgba(255,255,255,0.3);">
-      <div class="marquee-track">
-        <span class="text-white font-bold text-sm mx-4 opacity-90" style="font-family:'Fredoka One',cursive;">
-          🌯 WRAPS &nbsp;•&nbsp; 🍟 SNACKS &nbsp;•&nbsp; 🔥 OH SO GOOD &nbsp;•&nbsp; ✨ MADE لك &nbsp;•&nbsp;
-          🌯 WRAPS &nbsp;•&nbsp; 🍟 SNACKS &nbsp;•&nbsp; 🔥 OH SO GOOD &nbsp;•&nbsp; ✨ MADE لك &nbsp;•&nbsp;
-          🌯 WRAPS &nbsp;•&nbsp; 🍟 SNACKS &nbsp;•&nbsp; 🔥 OH SO GOOD &nbsp;•&nbsp; ✨ MADE لك &nbsp;•&nbsp;
-          🌯 WRAPS &nbsp;•&nbsp; 🍟 SNACKS &nbsp;•&nbsp; 🔥 OH SO GOOD &nbsp;•&nbsp; ✨ MADE لك &nbsp;•&nbsp;
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Red checkerboard bottom border -->
-  <div class="checker-strip w-full h-5" style="background-image: repeating-linear-gradient(90deg, white 0,white 14px, var(--kikaz-red) 14px, var(--kikaz-red) 28px); opacity: 0.35;"></div>
-</header>
-
-<!-- ── CATEGORY TABS (Sticky) ────────────────────────────────── -->
-<nav class="sticky-tabs sticky top-0 z-40 px-3 py-3"
-     style="background:var(--kikaz-white); border-bottom: 3px solid var(--kikaz-red); box-shadow: 0 4px 12px rgba(232,39,42,0.15);">
-  <div class="flex gap-2 overflow-x-auto pb-0.5 scrollbar-hide">
-    @for (cat of categoryCount(); track cat.id) {
-      <button
-        [id]="'tab-' + cat.id"
-        (click)="setCategory(cat.id)"
-        class="cat-tab flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full font-bold text-sm transition-all duration-200"
-        [class.active-tab]="activeCategory() === cat.id"
-        [class.inactive-tab]="activeCategory() !== cat.id"
-        [attr.aria-selected]="activeCategory() === cat.id">
-        <span>{{ cat.icon }}</span>
-        <span style="font-family:'Fredoka One',cursive;">{{ cat.label }}</span>
-        <span class="count-badge text-xs px-1.5 py-0.5 rounded-full font-bold">{{ cat.count }}</span>
-      </button>
-    }
-  </div>
-</nav>
-
-<!-- ── SECTION HEADER ─────────────────────────────────────────── -->
-<section id="menu-items" class="px-4 pt-5 pb-2">
-  @for (cat of categoryCount(); track cat.id) {
-    @if (activeCategory() === cat.id) {
-      <div class="section-header animate-slide-up flex flex-col gap-1 mb-4">
-        <h1 style="font-family:'Bangers',cursive; font-size: clamp(2rem,8vw,2.8rem); color:var(--kikaz-red); letter-spacing:0.05em; line-height:1;">
-          {{ cat.icon }} {{ cat.label }}
-        </h1>
-        <p style="font-family:'Nunito',sans-serif; color:var(--kikaz-gray); font-size:0.9rem;">
-          {{ cat.description }} · <strong>{{ cat.count }} items</strong>
-        </p>
-      </div>
-    }
-  }
-
-  <!-- ── FILTER & SORT BAR ──────────────────────────────────── -->
-  <div class="flex items-center gap-2 mb-5 overflow-x-auto pb-1 scrollbar-hide">
-    @for (f of filterOptions; track f.key) {
-      <button
-        [id]="'filter-' + f.key"
-        (click)="setFilter(f.key)"
-        class="filter-btn flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold border-2 transition-all duration-200"
-        [class.filter-active]="activeFilter() === f.key"
-        [class.filter-inactive]="activeFilter() !== f.key">
-        {{ f.emoji }} {{ f.label }}
-      </button>
-    }
-
-    <!-- Sort button -->
-    <button
-      id="sort-btn"
-      (click)="toggleSort()"
-      class="flex-shrink-0 ml-auto px-3 py-1.5 rounded-full text-sm font-bold border-2 transition-all duration-200"
-      style="border-color: var(--kikaz-dark); color: var(--kikaz-dark); white-space:nowrap; font-family:'Fredoka One',cursive; background:white;">
-      {{ getSortLabel() }}
-    </button>
-  </div>
-</section>
-
-<!-- ── MENU GRID ──────────────────────────────────────────────── -->
-<main class="px-3 pb-32">
-  @if (displayedItems().length === 0) {
-    <div class="text-center py-16">
-      <p class="text-5xl mb-3">😅</p>
-      <p style="font-family:'Bangers',cursive; font-size:1.5rem; color:var(--kikaz-red);">No items found!</p>
-      <p style="font-family:'Nunito',sans-serif; color:var(--kikaz-gray); font-size:0.9rem;">Try a different filter</p>
-    </div>
-  }
-
-  <div class="menu-grid grid grid-cols-1 gap-4">
-    @for (item of displayedItems(); track item.id; let i = $index) {
-      <!-- MENU CARD -->
-      <article
-        [id]="'item-' + item.id"
-        (click)="openItem(item)"
-        class="menu-card reveal"
-        [class]="'reveal-delay-' + ((i % 4) + 1)"
-        role="button"
-        [attr.aria-label]="'View details for ' + item.name"
-        tabindex="0"
-        (keydown.enter)="openItem(item)">
-
-        <!-- Card inner -->
-        <div class="card-inner relative overflow-hidden">
-
-          <!-- Background pattern -->
-          <div class="card-pattern absolute inset-0 pointer-events-none"></div>
-
-          <!-- Popular / Chef's Pick badges -->
-          @if (item.isChefsPick) {
-            <div class="badge-top-left">
-              <span class="badge-label chef">👨‍🍳 Chef's Pick</span>
-            </div>
-          } @else if (item.isPopular) {
-            <div class="badge-top-left">
-              <span class="badge-label popular">⭐ Popular</span>
-            </div>
-          }
-
-          <!-- Emoji & content row -->
-          <div class="flex items-start gap-3 p-4">
-
-            <!-- Emoji bubble -->
-            <div class="emoji-bubble flex-shrink-0">
-              <span class="text-3xl">{{ item.emoji }}</span>
-            </div>
-
-            <!-- Content -->
-            <div class="flex-1 min-w-0">
-              <h2 class="item-name">{{ item.name }}</h2>
-              <p class="item-desc">{{ item.description }}</p>
-
-              <!-- Tags -->
-              @if (item.tags && item.tags.length) {
-                <div class="flex flex-wrap gap-1 mt-2">
-                  @for (tag of item.tags; track tag) {
-                    <span class="tag-pill text-[10px] font-bold px-2 py-0.5 rounded-full uppercase"
-                          [class]="getTagClass(tag)">
-                      {{ getTagEmoji(tag) }} {{ tag }}
-                    </span>
-                  }
-                </div>
-              }
-            </div>
-
-            <!-- Price + arrow -->
-            <div class="flex flex-col items-end gap-2 flex-shrink-0">
-              <div class="price-badge">
-                <span class="price-amount">{{ item.price }}</span>
-                <span class="price-currency">EGP</span>
-              </div>
-              <div class="view-btn">
-                <span>VIEW</span>
-                <span>→</span>
-              </div>
-            </div>
+      
+      <div class="hero-content">
+        <div class="hero-top-bar">
+          <div class="osg-badge-modern" aria-hidden="true">
+            <svg viewBox="0 0 100 100" width="80" height="80" class="rotating-text">
+               <path id="curve" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="transparent"/>
+               <text font-size="12"><textPath href="#curve" fill="var(--red)" font-weight="900" font-family="var(--f-body)" letter-spacing="2">OH SO GOOD • OH SO GOOD • </textPath></text>
+            </svg>
+            <div class="osg-center">★</div>
           </div>
-
-        </div>
-      </article>
-    }
-  </div>
-
-  <!-- VAT note -->
-  <p class="text-center mt-6 text-xs" style="color:var(--kikaz-gray); font-family:'Nunito',sans-serif;">
-    * Prices are subject to 14% VAT
-  </p>
-</main>
-
-<!-- ── ITEM DETAIL MODAL ─────────────────────────────────────── -->
-@if (showModal()) {
-  <div
-    class="fixed inset-0 z-50 flex items-end bottom-sheet-overlay"
-    style="background: rgba(26,0,0,0.6); backdrop-filter: blur(4px);"
-    (click)="closeModal()"
-    role="dialog"
-    [attr.aria-modal]="true"
-    [attr.aria-label]="selectedItem()?.name">
-
-    <div
-      class="w-full max-h-[85vh] overflow-y-auto rounded-t-3xl"
-      [class.bottom-sheet-panel]="!isClosingModal()"
-      [class.bottom-sheet-panel-exit]="isClosingModal()"
-      style="background: var(--kikaz-white); border-top: 5px solid var(--kikaz-red);"
-      (click)="$event.stopPropagation()">
-
-      @if (selectedItem(); as item) {
-
-        <!-- Handle bar -->
-        <div class="flex justify-center pt-3 pb-2">
-          <div class="w-10 h-1.5 rounded-full" style="background:#ddd;"></div>
+          <div class="hero-made-badge">MADE بحب</div>
         </div>
 
-        <!-- Modal header -->
-        <div class="px-5 pb-4">
-          <!-- Close button -->
-          <div class="flex justify-between items-start mb-4">
-            <div class="flex items-center gap-3">
-              <div class="emoji-bubble-lg">
-                <span class="text-5xl">{{ item.emoji }}</span>
-              </div>
-              <div>
-                @if (item.isChefsPick) {
-                  <span class="badge-label chef text-xs mb-1 inline-block">👨‍🍳 Chef's Pick</span>
-                } @else if (item.isPopular) {
-                  <span class="badge-label popular text-xs mb-1 inline-block">⭐ Popular</span>
-                }
-                <h2 class="modal-title">{{ item.name }}</h2>
-              </div>
-            </div>
-            <button
-              id="close-modal-btn"
-              (click)="closeModal()"
-              class="close-btn"
-              aria-label="Close">
-              ✕
-            </button>
+        <div class="hero-center">
+          <div class="hero-wrap-container">
+            <img src="/hero_wrap_3d.png" alt="Delicious Wrap" class="hero-wrap-3d reveal-zoom">
           </div>
+          <h1 class="hero-title-main">
+            <span class="line1 reveal-up">WRAPS &amp;</span>
+            <span class="line2 reveal-up delay-1">SNACKS</span>
+          </h1>
+        </div>
 
-          <!-- Divider -->
-          <div class="h-0.5 w-full rounded" style="background: var(--kikaz-red); opacity:0.2; margin-bottom:1rem;"></div>
+        <div class="scroll-indicator">
+          <div class="mouse"><div class="wheel"></div></div>
+          <span>SCROLL</span>
+        </div>
+      </div>
+    </header>
 
-          <!-- Description -->
-          <p class="modal-desc mb-5">{{ item.description }}</p>
-
-          <!-- Tags -->
-          @if (item.tags && item.tags.length) {
-            <div class="flex flex-wrap gap-2 mb-5">
-              @for (tag of item.tags; track tag) {
-                <span class="tag-pill font-bold px-3 py-1 rounded-full uppercase text-xs"
-                      [class]="getTagClass(tag)">
-                  {{ getTagEmoji(tag) }} {{ tag }}
-                </span>
-              }
-            </div>
-          }
-
-          <!-- Price section -->
-          <div class="price-section flex items-center justify-between p-4 rounded-2xl"
-               style="background: var(--kikaz-red); border: 3px solid #1A0000; box-shadow: 4px 4px 0 #1A0000;">
-            <div>
-              <p class="text-white text-xs font-bold opacity-80" style="font-family:'Nunito',sans-serif;">PRICE</p>
-              <div class="flex items-baseline gap-1">
-                <span style="font-family:'Bangers',cursive; font-size:2.5rem; color:white; line-height:1;">
-                  {{ item.price }}
-                </span>
-                <span style="font-family:'Fredoka One',cursive; color:rgba(255,255,255,0.8); font-size:1rem;">EGP</span>
-              </div>
-              <p class="text-white text-[10px] opacity-60" style="font-family:'Nunito',sans-serif;">+14% VAT included</p>
-            </div>
-            <div class="text-white text-5xl animate-float">{{ item.emoji }}</div>
-          </div>
-
-          <!-- Call to order -->
-          <button
-            id="modal-order-btn"
-            (click)="callOrder()"
-            class="w-full mt-4 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all duration-200 active:scale-95"
-            style="background: #1A0000; color: white; font-family:'Bangers',cursive; letter-spacing:0.1em; font-size:1.3rem; comic-shadow">
-            📞 ORDER NOW · 01500899243
+    <!-- STICKY CATEGORY NAV -->
+    <nav class="sticky-nav">
+      <div class="sticky-nav-inner">
+        @for (cat of categoriesWithItems(); track cat.id) {
+          <button 
+            class="nav-pill" 
+            [class.active]="activeCategory() === cat.id"
+            (click)="scrollToCategory(cat.id)">
+            <span class="nav-icon">{{ cat.icon }}</span>
+            <span class="nav-label">{{ cat.label }}</span>
           </button>
+        }
+      </div>
+    </nav>
 
-          <p class="text-center mt-3 text-xs" style="color:var(--kikaz-gray); font-family:'Nunito',sans-serif;">
-            Tap to call &amp; order your wrap!
-          </p>
+    <!-- ██ MENU SECTIONS (Grid Layout matching physical menu) ██ -->
+    <main id="menu-main" class="menu-body">
+
+      @for (cat of categoriesWithItems(); track cat.id) {
+        
+        <!-- Section Header (Red Bubble Font) -->
+        <div class="sec-head-wrap" [id]="'section-' + cat.id">
+          <h2 class="sec-bubble-title">{{ cat.label | uppercase }}</h2>
+        </div>
+
+        <!-- Items Grid (2 columns on desktop) -->
+        <div class="items-grid">
+          @for (item of cat.items; track item.id; let i = $index) {
+            
+            <article 
+              [id]="'item-' + item.id"
+              class="menu-item-card reveal-up"
+              [style.animation-delay]="(i * 0.05) + 's'"
+              (click)="openItem(item)"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="'View ' + item.name"
+              (keydown.enter)="openItem(item)">
+              
+              <div class="card-content">
+                <div class="item-title-row">
+                  <h3 class="item-name">{{ item.name | uppercase }}</h3>
+                  <span class="item-price">{{ item.price }} <small>EGP</small></span>
+                </div>
+                <p class="item-desc">{{ item.description }}</p>
+                <div class="item-tags">
+                  @if (item.isPopular) { <span class="tag tag-pop">POPULAR</span> }
+                  @if (item.isChefsPick) { <span class="tag tag-chef">CHEF'S PICK</span> }
+                </div>
+              </div>
+              <div class="card-arrow">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+            </article>
+
+          }
         </div>
       }
-    </div>
+
+    </main>
+
+    <!-- ██ FOOTER (Exact copy of physical menu footer) ██ -->
+    <footer class="footer-clean">
+      <div class="ck ck-h"></div>
+      <div class="footer-inner">
+        <div class="footer-text-row">
+          <span class="footer-vat">Prices are subject to 14% VAT.</span>
+          <span class="footer-order">ORDER AT 01500899243</span>
+        </div>
+      </div>
+      <div class="ck ck-h"></div>
+    </footer>
+
+  </div>
+  <div class="ck ck-v page-side-r"></div>
+</div>
+
+
+<!-- ██ ITEM DETAIL — MODERN BOTTOM SHEET ██ -->
+@if (showModal()) {
+  <div class="modal-bg" style="animation: fade-in 0.3s ease both;" (click)="closeModal()" role="presentation"></div>
+  <div class="modal-sheet-modern" [style.animation]="isClosingModal() ? 'sheet-down-modern 0.3s cubic-bezier(0.4, 0, 0.2, 1) both' : 'sheet-up-modern 0.4s cubic-bezier(0.175, 0.885, 0.32, 1) both'" role="dialog" [attr.aria-label]="selectedItem()?.name">
+    @if (selectedItem(); as it) {
+      <div class="sheet-handle-modern"></div>
+      
+      <button id="modal-close" (click)="closeModal()" class="modal-close-modern" aria-label="Close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <div class="modal-hero-img">
+        @if (it.image) {
+          <img [src]="it.image" [alt]="it.name" (error)="it.image = ''">
+        } @else {
+          <div class="modal-placeholder-modern" style="background-image: url('/placeholder_food_bg.png');">
+            <div class="emoji-glass">
+              <span>{{ it.emoji || '🌯' }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="sheet-body-modern">
+        <div class="modal-title-row-modern">
+          <div>
+            <h2 class="modal-name-modern">{{ it.name | uppercase }}</h2>
+            <div class="modal-tags">
+              @for (tag of it.tags; track tag) {
+                <span class="badge {{ getTagClass(tag) }}">{{ tag | uppercase }}</span>
+              }
+            </div>
+          </div>
+          <div class="modal-price-badge-modern">
+            <span class="modal-price-num">{{ it.price }}</span>
+            <span class="modal-price-cur">EGP</span>
+          </div>
+        </div>
+        
+        <p class="modal-desc-modern">{{ it.description }}</p>
+        
+        <button id="modal-order" (click)="callOrder()" class="modal-order-btn-modern">
+          <span class="btn-text">ORDER NOW</span>
+          <span class="btn-subtext">01500899243</span>
+        </button>
+      </div>
+    }
   </div>
 }
 
-<!-- ── FLOATING ORDER BUTTON ─────────────────────────────────── -->
-<div class="fixed bottom-6 left-0 right-0 px-4 z-30 flex justify-center pointer-events-none">
-  <button
-    id="floating-order-btn"
-    (click)="callOrder()"
-    class="pointer-events-auto floating-order-btn animate-pulse-red flex items-center gap-3"
-    aria-label="Call to order">
-    <div class="flex items-center justify-center w-10 h-10 rounded-full bg-white">
-      <span class="text-lg">📞</span>
+<!-- FLOATING ORDER BUTTON -->
+<div class="fab-container">
+  <button id="fab" (click)="callOrder()" class="fab-modern" aria-label="Call to order 01500899243">
+    <div class="fab-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+      </svg>
     </div>
-    <span>ORDER · 01500899243</span>
-    <div class="animate-wiggle text-lg">🌯</div>
+    <span class="fab-text">ORDER NOW</span>
   </button>
 </div>
-
-<!-- ── FOOTER ─────────────────────────────────────────────────── -->
-<footer class="py-8 px-4 text-center mt-4" style="background: var(--kikaz-red);">
-  <!-- Top checker strip -->
-  <div class="checker-strip w-full h-4 mb-6" style="background-image: repeating-linear-gradient(90deg, white 0,white 12px, transparent 12px, transparent 24px); opacity:0.3;"></div>
-
-  <div class="flex flex-col items-center gap-3">
-    <p style="font-family:'Bangers',cursive; font-size:2.5rem; color:white; -webkit-text-stroke:2px #1A0000; line-height:1;">
-      KIKAZ
-    </p>
-    <p style="font-family:'Fredoka One',cursive; color:rgba(255,255,255,0.85); font-size:1rem;">
-      Wraps &amp; Snacks · Sahel El Shamal 🌊
-    </p>
-    <a href="tel:01500899243"
-       class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-bold"
-       style="background:white; color:var(--kikaz-red); font-family:'Bangers',cursive; font-size:1.2rem; letter-spacing:0.05em; border: 3px solid #1A0000; box-shadow: 3px 3px 0 #1A0000;">
-      📞 01500899243
-    </a>
-    <p class="text-white text-xs opacity-60" style="font-family:'Nunito',sans-serif;">
-      Prices are subject to 14% VAT &nbsp;|&nbsp; © 2025 KIKAZ
-    </p>
-  </div>
-</footer>

@@ -7,11 +7,11 @@ export interface MenuItem {
   tags?: MenuTag[];
   isPopular?: boolean;
   isChefsPick?: boolean;
-  emoji?: string;
+  emoji: string;
+  image?: string;         // path in /public
 }
 
 export type MenuCategory = 'breakfast' | 'allday' | 'sides';
-
 export type MenuTag = 'beef' | 'chicken' | 'veg' | 'fish';
 
 export interface MenuCategoryInfo {
